@@ -5,6 +5,7 @@
  * foreground and background color options.
  * 
  * @file	Blume.java
+ * @version	1.0.0
  * 
  * @author	Allen Vanderlinde
  * @date	5/29/2018
@@ -32,8 +33,13 @@
 
 package blume;
 
-public class Blume implements IBlume {
-	public void print( String text ) {
-		
+public class Blume {
+	/* Constants for frequently used character
+	 codes. */
+	/**	@brief	Character code which should begin every string intended to have colored characters. */
+	private static final String _ANSI_ = ((char)27 + "[");
+	
+	public static void print( String text ) {
+		System.out.println( new StringBuilder( text ) );
 	}
 }

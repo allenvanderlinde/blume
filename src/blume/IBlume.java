@@ -5,6 +5,7 @@
  * foreground and background color options.
  * 
  * @file	IBlume.java
+ * @version	1.0.0
  * 
  * @author	Allen Vanderlinde
  * @date	5/29/2018
@@ -33,5 +34,7 @@
 package blume;
 
 public interface IBlume {
-	public void print( String text );
+	/* Method
+	 signatures. */
+	//public void print( String text );
 }
