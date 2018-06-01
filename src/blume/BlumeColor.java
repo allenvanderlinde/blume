@@ -33,25 +33,27 @@
 
 package blume;
 
-public class Blume {
+public class BlumeColor {
+	static {
+		
+	}
 	
 	/**
-	 * @brief	Prints a string of text using a standard
-	 * 			8-color palette option.
-	 * 
-	 * 			This method does not produce a new line or LF.
-	 * 
-	 * @param	text
-	 * @param	color
+	 * @brief	Character code which should begin every
+	 *			string intended to have colored characters.
 	 */
-	public static void print( String text, String color ) {
-		System.out.print( new StringBuilder( BlumeColor._ANSI_ )
-				.append( color )
-				.append( text )
-				.append( BlumeColor._RESET_ ));
-	}
+	public static final String _ANSI_			= ((char)27 + "[");
+	/**
+	 * @brief	The ANSI character code to reset the terminal
+	 * 			character color.
+	 */
+	public static final String _RESET_			= (_ANSI_ + "0m");
 	
-	public static void print( String text, BlumeColor color ) {
-		System.out.println( new StringBuilder( text ) );
-	}
+	/*
+	 * Terminal standard 8-color palette options.
+	 */	
+	/**
+	 * @brief	Terminal color white.
+	 */
+	public static final String WHITE			= "37m";
 }
