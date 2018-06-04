@@ -2,7 +2,7 @@
  * Project: Blume
  * 
  * @brief	Blume is a simple interface for producing ANSI 8-bit and 24-bit colored text with
- * foreground and background color options and various display attributes.
+ * 			foreground and background color options and various display attributes.
  * 
  * @file	BlumeText.java
  * @version	1.0.0-beta
