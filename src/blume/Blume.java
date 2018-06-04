@@ -2,10 +2,10 @@
  * Project: Blume
  * 
  * @brief	Blume is a simple interface for producing ANSI 8-bit and 24-bit colored text with
- * foreground and background color options.
+ * foreground and background color options and various text attributes.
  * 
  * @file	Blume.java
- * @version	1.0.0
+ * @version	1.0.0-beta
  * 
  * @author	Allen Vanderlinde
  * @date	5/29/2018
@@ -34,24 +34,53 @@
 package blume;
 
 public class Blume {
+	/*
+	 * Note: It is important to note that the order of ANSI escape sequences
+	 * for color and display attributes are not significant, and therefore
+	 * a display attribute can be inserted in the string before a color option,
+	 * and vice versa.
+	 * 
+	 * As long as the escape code, or codes, are properly delimited, the text
+	 * should still be displayed correctly. This is why the various method
+	 * parameters below are of the format "mod"{n}.
+	 */
 	
 	/**
-	 * @brief	Prints a string of text using a standard
-	 * 			8-color palette option.
+	 * @brief	Prints a string of text using a single modifier.
 	 * 
 	 * 			This method does not produce a new line or LF.
 	 * 
 	 * @param	text
-	 * @param	color
+	 * @param	mod1
 	 */
-	public static void print( String text, String color ) {
-		System.out.print( new StringBuilder( BlumeColor._ANSI_ )
-				.append( color )
+	public static void print( String text, String mod1 ) {
+		System.out.print( new StringBuilder( BlumeText._ANSI_ )
+				.append( mod1 )
+				.append( BlumeText._TERMINATOR_ )
 				.append( text )
-				.append( BlumeColor._RESET_ ));
+				.append( BlumeText._RESET_ ));
 	}
 	
-	public static void print( String text, BlumeColor color ) {
+	/**
+	 * @brief	Prints a string of text using two modifiers.
+	 * 
+	 * 			This method does not produce a new line or LF.
+	 * 
+	 * @param	text
+	 * @param	mod1
+	 * @param	mod2
+	 */
+	public static void print( String text, String mod1, String mod2 ) {
+		System.out.print( new StringBuilder( BlumeText._ANSI_ )
+				.append( mod1 )
+				.append( BlumeText._DELIM_ )
+				.append( mod2 )
+				.append( BlumeText._TERMINATOR_ )
+				.append( text )
+				.append( BlumeText._RESET_ ));
+	}
+	
+	public static void print( String text, BlumeText color ) {
 		System.out.println( new StringBuilder( text ) );
 	}
 }
