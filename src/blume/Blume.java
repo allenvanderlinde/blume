@@ -39,10 +39,6 @@ public class Blume {
 	 * for color and display attributes are not significant, and therefore
 	 * a display attribute (e.g., bold, italic) can be inserted in the string
 	 * before a color option, and vice versa.
-	 * 
-	 * As long as the escape code, or codes, are properly delimited, the text
-	 * should still be displayed correctly. This is why the various method
-	 * parameters below are of the format "mod"{n}.
 	 */
 	
 	public static void print( String text, String... mods ) {
