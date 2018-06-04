@@ -54,58 +54,19 @@ public class Blume {
 		}
 		
 		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
-		int index = 1;
 		
+		// Build the ANSI sequences from the method arguments into an escaped string
 		for ( String mod : mods ) {
-			if ( index++ == mods.length ) {
-				string.setLength( string.length() - 1 );	// Remove the unnecessary delimeter from the last iteration
-				
-				string.append( BlumeText._TERMINATOR_ );	// And append the terminator to finalize the ANSI sequence
-				
-				break;
-			}
-			
 			string.append( mod ).append( BlumeText._DELIM_ );
 		}
 		
-		string.append( text ).append( BlumeText._RESET_ );
+		// Remove the trailing delimiter character appended from the previous loop logic
+		string.setLength( string.length() - 1 );
+		
+		// Close the string and prepare for printing to the terminal
+		string.append( BlumeText._TERMINATOR_ ).append( text ).append( BlumeText._RESET_ );
 		
 		System.out.print( string );
-	}
-	
-	/**
-	 * @brief	Prints a string of text using a single modifier.
-	 * 
-	 * 			This method does not produce a new line or LF.
-	 * 
-	 * @param	text
-	 * @param	mod1
-	 */
-	public static void print( String text, String mod1 ) {
-		System.out.print( new StringBuilder( BlumeText._ANSI_ )
-				.append( mod1 )
-				.append( BlumeText._TERMINATOR_ )
-				.append( text )
-				.append( BlumeText._RESET_ ));
-	}
-	
-	/**
-	 * @brief	Prints a string of text using two modifiers.
-	 * 
-	 * 			This method does not produce a new line or LF.
-	 * 
-	 * @param	text
-	 * @param	mod1
-	 * @param	mod2
-	 */
-	public static void print( String text, String mod1, String mod2 ) {
-		System.out.print( new StringBuilder( BlumeText._ANSI_ )
-				.append( mod1 )
-				.append( BlumeText._DELIM_ )
-				.append( mod2 )
-				.append( BlumeText._TERMINATOR_ )
-				.append( text )
-				.append( BlumeText._RESET_ ));
 	}
 	
 	public static void print( String text, BlumeText color ) {
