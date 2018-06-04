@@ -37,13 +37,41 @@ public class Blume {
 	/*
 	 * Note: It is important to note that the order of ANSI escape sequences
 	 * for color and display attributes are not significant, and therefore
-	 * a display attribute can be inserted in the string before a color option,
-	 * and vice versa.
+	 * a display attribute (e.g., bold, italic) can be inserted in the string
+	 * before a color option, and vice versa.
 	 * 
 	 * As long as the escape code, or codes, are properly delimited, the text
 	 * should still be displayed correctly. This is why the various method
 	 * parameters below are of the format "mod"{n}.
 	 */
+	
+	public static void print( String text, String... mods ) {
+		// If there are no modification arguments, print like normal and return
+		if ( mods.length == 0 ) {
+			System.out.print( text );
+			
+			return;
+		}
+		
+		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
+		int index = 1;
+		
+		for ( String mod : mods ) {
+			if ( index++ == mods.length ) {
+				string.setLength( string.length() - 1 );	// Remove the unnecessary delimeter from the last iteration
+				
+				string.append( BlumeText._TERMINATOR_ );	// And append the terminator to finalize the ANSI sequence
+				
+				break;
+			}
+			
+			string.append( mod ).append( BlumeText._DELIM_ );
+		}
+		
+		string.append( text ).append( BlumeText._RESET_ );
+		
+		System.out.print( string );
+	}
 	
 	/**
 	 * @brief	Prints a string of text using a single modifier.

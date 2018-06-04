@@ -40,7 +40,7 @@ public class BlumeText {
 	 * 			to have ANSI colored, or in other ways altered,
 	 * 			text.
 	 */
-	protected static final String _ANSI_		= ((char)27 + "[");
+	protected static final String _ANSI_		= ((char) 27 + "[");
 	/**
 	 * @brief	Character which denotes a separation between color
 	 * 			and any other display attributes or options.
@@ -107,6 +107,10 @@ public class BlumeText {
 		 * @brief	Bold display attribute for text.
 		 */
 		public static final String Bold				= "1";
+		/**
+		 * @brief	Underline display attribute for text.
+		 */
+		public static final String Underline		= "4";
 	}
 	
 	/*
@@ -115,8 +119,40 @@ public class BlumeText {
 	 */
 	public static class Background {
 		/**
+		 * @brief	Terminal background color black.
+		 */
+		public static final String Black		= "40";
+		/**
+		 * @brief	Terminal background color red.
+		 */
+		public static final String Red			= "41";
+		/**
+		 * @brief	Terminal background color green.
+		 */
+		public static final String Green		= "42";
+		/**
+		 * @brief	Terminal background color yellow.
+		 */
+		public static final String Yellow		= "43";
+		/**
+		 * @brief	Terminal background color blue.
+		 */
+		public static final String Blue			= "44";
+		/**
+		 * @brief	Terminal background color magenta.
+		 */
+		public static final String Magenta		= "45";
+		/**
+		 * @brief	Terminal background color cyan.
+		 */
+		public static final String Cyan		= "46";
+		/**
 		 * @brief	Terminal background color white.
 		 */
-		public static final String White		= "48";
+		public static final String White		= "47";
+		/**
+		 * @brief	Default terminal background color.
+		 */
+		public static final String Default		= "49";
 	}
 }
