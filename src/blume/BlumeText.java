@@ -33,126 +33,141 @@
 
 package blume;
 
-public class BlumeText {	
+public class BlumeText {
 	/**
 	 * @brief	CSI (Control Sequence Introducer) sequence
 	 * 			which should begin every string intended
-	 * 			to have ANSI colored, or in other ways altered,
+	 * 			to have colored, or in other ways altered,
 	 * 			text.
 	 */
-	protected static final String _ANSI_		= ((char) 27 + "[");
+	protected static final String _ANSI_ = ((char) 27 + "[");
 	/**
 	 * @brief	Character which denotes a separation between color
 	 * 			and any other display attributes or options.
 	 */
-	protected static final char _DELIM_			= ';';
+	protected static final char _DELIM_ = ';';
+	/**
+	 * @brief	ANSI escape sequence to reset the terminal
+	 * 			text color and text effects.
+	 */
+	protected static final String _RESET_ = (_ANSI_ + "0m");
 	/**
 	 * @brief	Character which denotes the end of a color or display
 	 * 			attribute escape sequence.
 	 */
-	protected static final char _TERMINATOR_	= 'm';
+	protected static final char _TERMINATOR_ = 'm';
 	/**
-	 * @brief	The ANSI escape code to reset the terminal
-	 * 			text color and text effects.
+	 * @brief	ANSI escape sequence to signal use of the system's
+	 * 			8-bit color palette (0 - 255).
 	 */
-	protected static final String _RESET_		= (_ANSI_ + "0m");
+	protected static final String _8_BIT_FOREGROUND_ = "38;5;";
+	/**
+	 * @brief	ANSI escape sequence to signal use of 24-bit true
+	 * 			color.
+	 */
+	protected static final String _24_BIT_FOREGROUND_ = "38;2;";
 	
 	/*
-	 * Terminal standard 8-color palette options
+	 * Standard terminal 8-color palette options
 	 * (foreground).
 	 */
 	/**
 	 * @brief	Terminal foreground color black.
 	 */
-	public static final String Black			= "30";
+	public static final String Black = "30";
 	/**
 	 * @brief	Terminal foreground color red.
 	 */
-	public static final String Red				= "31";
+	public static final String Red = "31";
 	/**
 	 * @brief	Terminal foreground color green.
 	 */
-	public static final String Green			= "32";
+	public static final String Green = "32";
 	/**
 	 * @brief	Terminal foreground color yellow.
 	 */
-	public static final String Yellow			= "33";
+	public static final String Yellow = "33";
 	/**
 	 * @brief	Terminal foreground color blue.
 	 */
-	public static final String Blue				= "34";
+	public static final String Blue = "34";
 	/**
 	 * @brief	Terminal foreground color magenta.
 	 */
-	public static final String Magenta			= "35";
+	public static final String Magenta = "35";
 	/**
 	 * @brief	Terminal foreground color cyan.
 	 */
-	public static final String Cyan				= "36";
+	public static final String Cyan = "36";
 	/**
 	 * @brief	Terminal foreground color white.
 	 */
-	public static final String White			= "37";
+	public static final String White = "37";
 	/**
 	 * @brief	Terminal default foreground color.
 	 */
-	public static final String Default			= "39";
+	public static final String Default = "39";
 	
 	/*
-	 * Terminal standard SGR (Select Graphic Rendition) text
+	 * Standard terminal SGR (Select Graphic Rendition) display
 	 * attributes.
 	 */
 	public static class Attribute {
 		/**
 		 * @brief	Bold display attribute for text.
 		 */
-		public static final String Bold				= "1";
+		public static final String Bold = "1";
 		/**
 		 * @brief	Underline display attribute for text.
 		 */
-		public static final String Underline		= "4";
+		public static final String Underline = "4";
+		/**
+		 * @brief	Inverse display attribute for text
+		 * 			(switches foreground and background colors).
+		 */
+		public static final String Inverse = "7";
 	}
 	
 	/*
-	 * Terminal standard 8-color palette options
+	 * Standard terminal 8-color palette options
 	 * (background).
 	 */
 	public static class Background {
 		/**
 		 * @brief	Terminal background color black.
 		 */
-		public static final String Black		= "40";
+		public static final String Black = "40";
 		/**
 		 * @brief	Terminal background color red.
 		 */
-		public static final String Red			= "41";
+		public static final String Red = "41";
 		/**
 		 * @brief	Terminal background color green.
 		 */
-		public static final String Green		= "42";
+		public static final String Green = "42";
 		/**
 		 * @brief	Terminal background color yellow.
 		 */
-		public static final String Yellow		= "43";
+		public static final String Yellow = "43";
 		/**
 		 * @brief	Terminal background color blue.
 		 */
-		public static final String Blue			= "44";
+		public static final String Blue = "44";
 		/**
 		 * @brief	Terminal background color magenta.
 		 */
-		public static final String Magenta		= "45";
+		public static final String Magenta = "45";
 		/**
 		 * @brief	Terminal background color cyan.
 		 */
-		public static final String Cyan		= "46";
+		public static final String Cyan = "46";
 		/**
 		 * @brief	Terminal background color white.
 		 */
-		public static final String White		= "47";
+		public static final String White = "47";
 		/**
 		 * @brief	Default terminal background color.
 		 */
-		public static final String Default		= "49";
+		public static final String Default = "49";
 	}
 }

@@ -41,6 +41,18 @@ public class Blume {
 	 * before a color option, and vice versa.
 	 */
 	
+	/**
+	 * @brief	Prints a string with various modifiers for text color and
+	 * 			display attributes.
+	 * 
+	 * 			No new line or LF is produced.
+	 * 
+	 * 			Compatible modifiers can be found in the BlumeText class
+	 * 			and are essentially ANSI escape sequences.
+	 * 
+	 * @param text
+	 * @param mods
+	 */
 	public static void print( String text, String... mods ) {
 		// If there are no modification arguments, print like normal and return
 		if ( mods.length == 0 ) {
@@ -53,19 +65,105 @@ public class Blume {
 		
 		// Build the ANSI sequences from the method arguments into an escaped string
 		for ( String mod : mods ) {
-			string.append( mod ).append( BlumeText._DELIM_ );
+			string.append( mod )
+				.append( BlumeText._DELIM_ );
 		}
 		
 		// Remove the trailing delimiter character appended from the previous loop logic
 		string.setLength( string.length() - 1 );
 		
 		// Close the string and prepare for printing to the terminal
-		string.append( BlumeText._TERMINATOR_ ).append( text ).append( BlumeText._RESET_ );
+		string.append( BlumeText._TERMINATOR_ )
+			.append( text )
+			.append( BlumeText._RESET_ );
 		
 		System.out.print( string );
 	}
 	
-	public static void print( String text, BlumeText color ) {
-		System.out.println( new StringBuilder( text ) );
+	/**
+	 * @brief	Prints a string with various modifiers for text color and
+	 * 			display attributes.
+	 * 
+	 * 			This method produces a new line or LF.
+	 * 
+	 * 			Compatible modifiers can be found in the BlumeText class
+	 * 			and are essentially ANSI escape sequences.
+	 * 
+	 * @param text
+	 * @param mods
+	 */
+	public static void println( String text, String... mods ) {
+		// If there are no modification arguments, print like normal and return
+		if ( mods.length == 0 ) {
+			System.out.println( text );
+			
+			return;
+		}
+		
+		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
+		
+		// Build the ANSI sequences from the method arguments into an escaped string
+		for ( String mod : mods ) {
+			string.append( mod )
+				.append( BlumeText._DELIM_ );
+		}
+		
+		// Remove the trailing delimiter character appended from the previous loop logic
+		string.setLength( string.length() - 1 );
+		
+		// Close the string and prepare for printing to the terminal
+		string.append( BlumeText._TERMINATOR_ )
+			.append( text )
+			.append( BlumeText._RESET_ );
+		
+		System.out.println( string );
+	}
+	
+	/**
+	 * @brief	Prints a string with an 8-bit or 24-bit color option represented
+	 * 			by a BlumeColor object. Background color palette options and other
+	 * 			display attributes are also compatible mods.
+	 * 
+	 * 			No new line or LF is produced.
+	 * 
+	 * 			Compatible modifiers can be found in the BlumeText class
+	 * 			and are essentially ANSI escape sequences.
+	 * 
+	 * @param text
+	 * @param color
+	 * @param mods
+	 */
+	public static void print( String text, BlumeColor color, String... mods ) {
+		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
+		
+		// If mods have been included, append them to the ANSI escape sequence
+		if ( mods.length > 0 ) {
+			for ( String mod : mods ) {
+				string.append( mod )
+					.append( BlumeText._DELIM_ );
+			}
+		}
+		
+		/*
+		 * Close the string with the appropriate color option and value
+		 * and prepare for printing to the terminal.
+		 */
+		if ( color.getIs8Bit() ) { // 8-bit color
+			string.append( BlumeText._8_BIT_FOREGROUND_ )
+				.append( color.getColorValue() );
+		} else if ( color.getIs24Bit() ) { // 24-bit color
+			string.append( BlumeText._24_BIT_FOREGROUND_ )
+				.append( color.getRed() )
+				.append( BlumeText._DELIM_ )
+				.append( color.getGreen() )
+				.append( BlumeText._DELIM_ )
+				.append( color.getBlue() );
+		}
+		
+		string.append( BlumeText._TERMINATOR_ )
+			.append( text )
+			.append( BlumeText._RESET_ );
+		
+		System.out.print( string );
 	}
 }
