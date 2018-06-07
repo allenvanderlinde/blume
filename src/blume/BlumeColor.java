@@ -61,6 +61,15 @@ public class BlumeColor {
 	protected boolean is24Bit;
 	
 	/**
+	 * @brief	Default constructor which produces black from the
+	 * 			system's 8-bit color palette.
+	 */
+	public BlumeColor() {
+		this.colorValue = 16;
+		this.is8Bit = true;
+	}
+	
+	/**
 	 * @brief	Constructor for an 8-bit color palette option (0 - 255).
 	 * 
 	 * @param colorValue

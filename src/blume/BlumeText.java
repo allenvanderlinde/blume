@@ -58,14 +58,24 @@ public class BlumeText {
 	protected static final char _TERMINATOR_ = 'm';
 	/**
 	 * @brief	ANSI escape sequence to signal use of the system's
-	 * 			8-bit color palette (0 - 255).
+	 * 			8-bit color palette (256 colors).
 	 */
 	protected static final String _8_BIT_FOREGROUND_ = "38;5;";
+	/**
+	 * @brief	ANSI escape sequence to signal use of the system's
+	 * 			8-bit color palette (256 colors) for background color.
+	 */
+	protected static final String _8_BIT_BACKGROUND_ = "48;5;";
 	/**
 	 * @brief	ANSI escape sequence to signal use of 24-bit true
 	 * 			color.
 	 */
 	protected static final String _24_BIT_FOREGROUND_ = "38;2;";
+	/**
+	 * @brief	ANSI escape sequence to signal use of 24-bit true
+	 * 			color for background color.
+	 */
+	protected static final String _24_BIT_BACKGROUND_ = "48;2;";
 	
 	/*
 	 * Standard terminal 8-color palette options
