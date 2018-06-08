@@ -22,18 +22,6 @@ import blume.BlumeText;
 
 **Note:** `Blume` is a static class that can be used anywhere `System.out.print()` and `System.out.println()` can.
 
-### Examples
-For the following examples, we're assuming the following:
-```java
-import blume.*;
-
-public class Application {
-	public static void main( String[] args ) {
-		// Example code would go here
-	}
-}
-```
-
 ### Semantics
 Semantically, _foreground_ `BlumeColor` arguments <u>always</u> preceed _background_ `BlumeColor` arguments, followed by a series of modifications (e.g., bold, inverse, underline). `BlumeText.Attribute` and `BlumeText.Background` are nested classes whose members are used as modifications. `BlumeText` also has 8 default "system" colors which are also technically considered modifications (e.g., cyan, red, yellow, magenta).
 
@@ -59,6 +47,18 @@ Blume.println( "Blume is \"flower\" in German", BlumeText.Background.Red, BlumeT
 You can create a new `BlumeColor` object, however, with the necessary color combination to produce cyan and use that instead.
 ```java
 Blume.println( "Blume is \"flower\" in German", new BlumeColor( 0, 255, 255 ), new BlumeColor( 255, 155, 231 ) );
+```
+
+### Examples
+For the following examples, we're assuming the following:
+```java
+import blume.*;
+
+public class Application {
+	public static void main( String[] args ) {
+		// Example code would go here
+	}
+}
 ```
 
 #### Example 1
