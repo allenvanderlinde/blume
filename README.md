@@ -41,6 +41,7 @@ Blume.println( "Hello, world!", new BlumeColor( 255 ), new BlumeColor( 241, 66, 
 ```
 Output:
 
+![Example 1](examples/example1.png)
 
 You can also instantiate `BlumeColor` objects elsewhere and use their instances like any identifier.
 ```java
