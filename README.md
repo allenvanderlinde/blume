@@ -41,7 +41,52 @@ Blume.println( "Hello, world!", new BlumeColor( 255 ), new BlumeColor( 241, 66, 
 ```
 Output:
 
+![Example 1](examples/example1.png)
 
+**Notes:**
+1. The first use of `BlumeColor` above takes a single argument. This is an integer value from 0 to 255 which represents a color from the standard 8-bit color palette map: (https://en.wikipedia.org/wiki/8-bit_color).
+2. The second use of `BlumeColor` takes three arguments, each representing the amount of color to use for each Red, Green, and Blue color channel. This produces a 24-bit "true color" combination.
+
+**More information:**
 You can also instantiate `BlumeColor` objects elsewhere and use their instances like any identifier.
 ```java
+BlumeColor whiteFg = null;
+BlumeColor hotPinkBg = null;
+
+whiteFg = new BlumeColor( 255 );
+hotPinkBg = new BlumeColor( 241, 66, 244 );
+
+Blume.println( "Hello, again!", whiteFg, hotPinkBg, BlumeText.Attribute.Bold );
 ```
+
+### Semantics
+Semantically, _foreground_ `BlumeColor` arguments <u>always</u> preceed _background_ `BlumeColor` arguments, followed by a series of modifications (e.g., bold, inverse, underline). `BlumeText.Attribute` and `BlumeText.Background` are classes whose members are used as modifications.
+
+Modifications are a variable argument (varargs) array of type `String` which always come as the final arguments in any calls to `Blume.print()` or `Blume.println()`. Modifications can be placed in any order.
+
+This means you won't be able to use an 8-bit or 24-bit background color with one of the 8 canned terminal foreground colors.
+
+```java
+// This will not work!
+Blume.println( "Blume is \"flower\" in German", BlumeText.Cyan, new BlumeColor( 255, 155, 231 ) );
+```
+
+```java
+// This is ok
+Blume.println( "Blume is \"flower\" in German", BlumeText.Yellow, BlumeText.Background.Red );
+```
+
+#### Example 2
+Print a yellow, bold word in a string with some text over a purple background.
+
+```java
+Blume.print( "This " );
+Blume.print( "word", BlumeText.Yellow, BlumeText.Attribute.Bold );
+Blume.print( " is yellow and bold " );
+Blume.println( "and this has a purple background!", new BlumeColor( 255 ), new BlumeColor( 153, 0, 204 ) );
+```
+Output:
+![Example 2](examples/example2.png)
+
+## More Information
+You can find the Javadocs for this project [here](https://github.com/allenvanderlinde/blume/tree/master/doc).
