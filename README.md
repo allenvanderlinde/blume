@@ -60,7 +60,7 @@ Blume.println( "Hello, again!", whiteFg, hotPinkBg, BlumeText.Attribute.Bold );
 ```
 
 ### Semantics
-Semantically, _foreground_ `BlumeColor` arguments <u>always</u> preceed _background_ `BlumeColor` arguments, followed by a series of modifications (e.g., bold, inverse, underline). `BlumeText.Attribute` and `BlumeText.Background` are classes whose members are used as modifications.
+Semantically, _foreground_ `BlumeColor` arguments <u>always</u> preceed _background_ `BlumeColor` arguments, followed by a series of modifications (e.g., bold, inverse, underline). `BlumeText.Attribute` and `BlumeText.Background` are nested classes whose members are used as modifications. `BlumeText` also has 8 default "system" colors which are also technically considered modifications (e.g., cyan, red, yellow, magenta).
 
 Modifications are a variable argument (varargs) array of type `String` which always come as the final arguments in any calls to `Blume.print()` or `Blume.println()`. Modifications can be placed in any order.
 
