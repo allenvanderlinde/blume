@@ -75,6 +75,11 @@ Blume.println( "Blume is \"flower\" in German", BlumeText.Cyan, new BlumeColor( 
 // This is ok
 Blume.println( "Blume is \"flower\" in German", BlumeText.Yellow, BlumeText.Background.Red );
 ```
+**Note:** Since modifications can be written in any order, this will also work.
+```java
+// This works too!
+Blume.println( "Blume is \"flower\" in German", BlumeText.Background.Red, BlumeText.Yellow );
+```
 
 You can create a new `BlumeColor` object, however, with the necessary color combination to produce cyan and use that instead.
 ```java
