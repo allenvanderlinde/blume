@@ -1,11 +1,11 @@
 /**
  * Project: Blume
  * 
- * @brief	Blume is a simple interface for producing ANSI 8-bit and 24-bit colored text with
- * 			foreground and background color options and various text attributes.
+ * Blume is a simple interface for producing ANSI 8-bit and 24-bit colored text with
+ * foreground and background color options and various text attributes.
  * 
  * @file	Blume.java
- * @version	1.0.0-beta
+ * @version	1.0.060818
  * 
  * @author	Allen Vanderlinde
  * @date	5/29/2018
@@ -42,13 +42,13 @@ public class Blume {
 	 */
 	
 	/**
-	 * @brief	Prints a string with various modifiers for text color and
-	 * 			display attributes.
+	 * Prints a string with various modifiers for text color and
+	 * display attributes.
 	 * 
-	 * 			No new line or LF is produced.
+	 * No new line or LF is produced.
 	 * 
-	 * 			Compatible modifiers can be found in the BlumeText class
-	 * 			and are essentially ANSI escape sequences.
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
+	 * and are essentially ANSI escape sequences.
 	 * 
 	 * @param text
 	 * @param mods
@@ -81,14 +81,14 @@ public class Blume {
 	}
 	
 	/**
-	 * @brief	Prints a string with an 8-bit or 24-bit color option represented
-	 * 			by a BlumeColor object. Background color palette options and other
-	 * 			display attributes are also compatible mods.
+	 * Prints a string with an 8-bit or 24-bit color option represented
+	 * by a {@link blume.BlumeColor} object. Background color palette options
+	 * and other display attributes are also compatible mods.
 	 * 
-	 * 			No new line or LF is produced.
+	 * No new line or LF is produced.
 	 * 
-	 * 			Compatible modifiers can be found in the BlumeText class
-	 * 			and are essentially ANSI escape sequences.
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
+	 * and are essentially ANSI escape sequences.
 	 * 
 	 * @param text
 	 * @param color
@@ -128,8 +128,32 @@ public class Blume {
 		System.out.print( string );
 	}
 	
+	/**
+	 * Prints a string with 8-bit or 24-bit foreground and background
+	 * color options represented by {@link blume.BlumeColor} objects.
+	 * Display attributes (e.g., bold, inverse) can still be used
+	 * and are compatible mods.
+	 * 
+	 * No new line or LF is produced.
+	 * 
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
+	 * and are essentially ANSI escape sequences.
+	 * 
+	 * @param text
+	 * @param foregroundColor
+	 * @param backgroundColor
+	 * @param mods
+	 */
 	public static void print( String text, BlumeColor foregroundColor, BlumeColor backgroundColor, String... mods ) {
 		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
+		
+		// If mods have been included, append them to the ANSI escape sequence
+		if ( mods.length > 0 ) {
+			for ( String mod : mods ) {
+				string.append( mod )
+					.append( BlumeText._DELIM_ );
+			}
+		}
 		
 		/*
 		 * For the foreground color, close the string with the
@@ -148,24 +172,41 @@ public class Blume {
 				.append( foregroundColor.getBlue() );
 		}
 		
+		// Append another delimiter before appending the background color
+		string.append( BlumeText._DELIM_ );
+		
 		/*
 		 * For the background color, close the string with the
 		 * appropriate color option and value and prepare
 		 * for printing to the terminal.
 		 */
 		if ( backgroundColor.getIs8Bit() ) {
-			
+			string.append( BlumeText._8_BIT_BACKGROUND_ )
+				.append( backgroundColor.getColorValue() );
+		} else if ( backgroundColor.getIs24Bit() ) {
+			string.append( BlumeText._24_BIT_BACKGROUND_ )
+				.append( backgroundColor.getRed() )
+				.append( BlumeText._DELIM_ )
+				.append( backgroundColor.getGreen() )
+				.append( BlumeText._DELIM_ )
+				.append( backgroundColor.getBlue() );
 		}
+		
+		string.append( BlumeText._TERMINATOR_ )
+			.append( text )
+			.append( BlumeText._RESET_ );
+		
+		System.out.print( string );
 	}
 	
 	/**
-	 * @brief	Prints a string with various modifiers for text color and
-	 * 			display attributes.
+	 * Prints a string with various modifiers for text color and
+	 * display attributes.
 	 * 
-	 * 			This method produces a new line or LF.
+	 * This method produces a new line or LF.
 	 * 
-	 * 			Compatible modifiers can be found in the BlumeText class
-	 * 			and are essentially ANSI escape sequences.
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
+	 * and are essentially ANSI escape sequences.
 	 * 
 	 * @param text
 	 * @param mods
@@ -198,14 +239,14 @@ public class Blume {
 	}
 	
 	/**
-	 * @brief	Prints a string with an 8-bit or 24-bit color option represented
-	 * 			by a BlumeColor object. Background color palette options and other
-	 * 			display attributes are also compatible mods.
+	 * Prints a string with an 8-bit or 24-bit color option represented
+	 * by a {@link blume.BlumeColor} object. Background color palette options
+	 * and other display attributes are also compatible mods.
 	 * 
-	 * 			This method produces a new line or LF.
+	 * This method produces a new line or LF.
 	 * 
-	 * 			Compatible modifiers can be found in the BlumeText class
-	 * 			and are essentially ANSI escape sequences.
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
+	 * and are essentially ANSI escape sequences.
 	 * 
 	 * @param text
 	 * @param color
@@ -236,6 +277,77 @@ public class Blume {
 				.append( color.getGreen() )
 				.append( BlumeText._DELIM_ )
 				.append( color.getBlue() );
+		}
+		
+		string.append( BlumeText._TERMINATOR_ )
+			.append( text )
+			.append( BlumeText._RESET_ );
+		
+		System.out.println( string );
+	}
+	
+	/**
+	 * Prints a string with 8-bit or 24-bit foreground and background
+	 * color options represented by {@link blume.BlumeColor} objects.
+	 * Display attributes (e.g., bold, inverse) can still be used
+	 * and are compatible mods.
+	 * 
+	 * This method produces a new line or LF.
+	 * 
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
+	 * and are essentially ANSI escape sequences.
+	 * 
+	 * @param text
+	 * @param foregroundColor
+	 * @param backgroundColor
+	 * @param mods
+	 */
+	public static void println( String text, BlumeColor foregroundColor, BlumeColor backgroundColor, String... mods ) {
+		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
+		
+		// If mods have been included, append them to the ANSI escape sequence
+		if ( mods.length > 0 ) {
+			for ( String mod : mods ) {
+				string.append( mod )
+					.append( BlumeText._DELIM_ );
+			}
+		}
+		
+		/*
+		 * For the foreground color, close the string with the
+		 * appropriate color option and value and prepare
+		 * for printing to the terminal.
+		 */
+		if ( foregroundColor.getIs8Bit() ) { // 8-bit color
+			string.append( BlumeText._8_BIT_FOREGROUND_ )
+				.append( foregroundColor.getColorValue() );
+		} else if ( foregroundColor.getIs24Bit() ) { // 24-bit color
+			string.append( BlumeText._24_BIT_FOREGROUND_ )
+				.append( foregroundColor.getRed() )
+				.append( BlumeText._DELIM_ )
+				.append( foregroundColor.getGreen() )
+				.append( BlumeText._DELIM_ )
+				.append( foregroundColor.getBlue() );
+		}
+		
+		// Append another delimiter before appending the background color
+		string.append( BlumeText._DELIM_ );
+		
+		/*
+		 * For the background color, close the string with the
+		 * appropriate color option and value and prepare
+		 * for printing to the terminal.
+		 */
+		if ( backgroundColor.getIs8Bit() ) {
+			string.append( BlumeText._8_BIT_BACKGROUND_ )
+				.append( backgroundColor.getColorValue() );
+		} else if ( backgroundColor.getIs24Bit() ) {
+			string.append( BlumeText._24_BIT_BACKGROUND_ )
+				.append( backgroundColor.getRed() )
+				.append( BlumeText._DELIM_ )
+				.append( backgroundColor.getGreen() )
+				.append( BlumeText._DELIM_ )
+				.append( backgroundColor.getBlue() );
 		}
 		
 		string.append( BlumeText._TERMINATOR_ )

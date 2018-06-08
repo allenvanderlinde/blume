@@ -1,11 +1,11 @@
 /**
  * Project: Blume
  * 
- * @brief	Blume is a simple interface for producing ANSI 8-bit and 24-bit colored text with
- * 			foreground and background color options and various text attributes.
+ * Blume is a simple interface for producing ANSI 8-bit and 24-bit colored text with
+ * foreground and background color options and various text attributes.
  * 
  * @file	BlumeColor.java
- * @version	1.0.0-beta
+ * @version	1.0.060818
  * 
  * @author	Allen Vanderlinde
  * @date	6/7/2018
@@ -35,34 +35,34 @@ package blume;
 
 public class BlumeColor {
 	/**
-	 * @brief	Integer from 0 to 255 that represents an 8-bit
-	 * 			color palette option.
+	 * Integer from 0 to 255 that represents an 8-bit
+	 * color palette option.
 	 */
 	protected int colorValue;
 	/**
-	 * @brief	Red color value for 24-bit color.
+	 * Red color value for 24-bit color.
 	 */
 	protected int red;
 	/**
-	 * @brief	Green color value for 24-bit color.
+	 * Green color value for 24-bit color.
 	 */
 	protected int green;
 	/**
-	 * @brief	Blue color value for 24-bit color.
+	 * Blue color value for 24-bit color.
 	 */
 	protected int blue;
 	/**
-	 * @brief	Flag to determine whether this is an 8-bit color instance.
+	 * Flag to determine whether this is an 8-bit color instance.
 	 */
 	protected boolean is8Bit;
 	/**
-	 * @brief	Flag to determine whether this is a 24-bit color instance.
+	 * Flag to determine whether this is a 24-bit color instance.
 	 */
 	protected boolean is24Bit;
 	
 	/**
-	 * @brief	Default constructor which produces black from the
-	 * 			system's 8-bit color palette.
+	 * Default constructor which produces black ({@link blume.BlumeText#Black}) from the
+	 * system's 8-bit color palette.
 	 */
 	public BlumeColor() {
 		this.colorValue = 16;
@@ -70,7 +70,7 @@ public class BlumeColor {
 	}
 	
 	/**
-	 * @brief	Constructor for an 8-bit color palette option (0 - 255).
+	 * Constructor for an 8-bit color palette option (0 - 255).
 	 * 
 	 * @param colorValue
 	 */
@@ -80,11 +80,12 @@ public class BlumeColor {
 	}
 	
 	/**
-	 * @brief	Constructor for a 24-bit RGB color option.
+	 * Constructor for a 24-bit RGB color option.
 	 * 
-	 * 			24-bit (true color) is comprised of three color
-	 * 			channels (red, green, blue) with values 0 to 255
-	 * 			each.
+	 * 24-bit (true color) is comprised of three color
+	 * channels (red, green, blue) with values 0 to 255
+	 * each.
+	 * 
 	 * @param red
 	 * @param green
 	 * @param blue
@@ -99,26 +100,39 @@ public class BlumeColor {
 	/*
 	 * Accessors.
 	 */
+	/**
+	 * @return The 8-bit color palette value of this color.
+	 */
 	public int getColorValue() {
 		return this.colorValue;
 	}
-	
+	/**
+	 * @return The red color value of this color.
+	 */
 	public int getRed() {
 		return this.red;
 	}
-	
+	/**
+	 * @return The green color value of this color.
+	 */
 	public int getGreen() {
 		return this.green;
 	}
-	
+	/**
+	 * @return The blue color value of this color.
+	 */
 	public int getBlue() {
 		return this.blue;
 	}
-	
+	/**
+	 * @return Whether this color is an 8-bit color.
+	 */
 	public boolean getIs8Bit() {
 		return this.is8Bit;
 	}
-	
+	/**
+	 * @return Whether this color is a 24-bit color.
+	 */
 	public boolean getIs24Bit() {
 		return this.is24Bit;
 	}
