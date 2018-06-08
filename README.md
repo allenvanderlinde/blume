@@ -64,7 +64,7 @@ Semantically, _foreground_ `BlumeColor` arguments <u>always</u> preceed _backgro
 
 Modifications are a variable argument (varargs) array of type `String` which always come as the final arguments in any calls to `Blume.print()` or `Blume.println()`. Modifications can be placed in any order.
 
-This means you won't be able to use an 8-bit or 24-bit background color with one of the 8 canned terminal foreground colors.
+This means you won't be able to use an 8-bit or 24-bit background color with one of the 8 default terminal foreground colors.
 
 ```java
 // This will not work!
@@ -86,6 +86,7 @@ Blume.print( " is yellow and bold " );
 Blume.println( "and this has a purple background!", new BlumeColor( 255 ), new BlumeColor( 153, 0, 204 ) );
 ```
 Output:
+
 ![Example 2](examples/example2.png)
 
 ## More Information
