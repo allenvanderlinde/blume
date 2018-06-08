@@ -34,31 +34,6 @@ public class Application {
 }
 ```
 
-#### Example 1
-Print bold white text with a [hot pink background](https://www.w3schools.com/colors/colors_picker.asp?color=f142f4).
-```java
-Blume.println( "Hello, world!", new BlumeColor( 255 ), new BlumeColor( 241, 66, 244 ), BlumeText.Attribute.Bold );
-```
-Output:
-
-![Example 1](examples/example1.png)
-
-**Notes:**
-1. The first use of `BlumeColor` above takes a single argument. This is an integer value from 0 to 255 which represents a color from the standard 8-bit color palette map: (https://en.wikipedia.org/wiki/8-bit_color).
-2. The second use of `BlumeColor` takes three arguments, each representing the amount of color to use for each Red, Green, and Blue color channel. This produces a 24-bit "true color" combination.
-
-**More information:**
-You can also instantiate `BlumeColor` objects elsewhere and use their instances like any identifier.
-```java
-BlumeColor whiteFg = null;
-BlumeColor hotPinkBg = null;
-
-whiteFg = new BlumeColor( 255 );
-hotPinkBg = new BlumeColor( 241, 66, 244 );
-
-Blume.println( "Hello, again!", whiteFg, hotPinkBg, BlumeText.Attribute.Bold );
-```
-
 ### Semantics
 Semantically, _foreground_ `BlumeColor` arguments <u>always</u> preceed _background_ `BlumeColor` arguments, followed by a series of modifications (e.g., bold, inverse, underline). `BlumeText.Attribute` and `BlumeText.Background` are nested classes whose members are used as modifications. `BlumeText` also has 8 default "system" colors which are also technically considered modifications (e.g., cyan, red, yellow, magenta).
 
@@ -84,6 +59,31 @@ Blume.println( "Blume is \"flower\" in German", BlumeText.Background.Red, BlumeT
 You can create a new `BlumeColor` object, however, with the necessary color combination to produce cyan and use that instead.
 ```java
 Blume.println( "Blume is \"flower\" in German", new BlumeColor( 0, 255, 255 ), new BlumeColor( 255, 155, 231 ) );
+```
+
+#### Example 1
+Print bold white text with a [hot pink background](https://www.w3schools.com/colors/colors_picker.asp?color=f142f4).
+```java
+Blume.println( "Hello, world!", new BlumeColor( 255 ), new BlumeColor( 241, 66, 244 ), BlumeText.Attribute.Bold );
+```
+Output:
+
+![Example 1](examples/example1.png)
+
+**Notes:**
+1. The first use of `BlumeColor` above takes a single argument. This is an integer value from 0 to 255 which represents a color from the standard 8-bit color palette map: (https://en.wikipedia.org/wiki/8-bit_color).
+2. The second use of `BlumeColor` takes three arguments, each representing the amount of color to use for each Red, Green, and Blue color channel. This produces a 24-bit "true color" combination.
+
+**More information:**
+You can also instantiate `BlumeColor` objects elsewhere and use their instances like any identifier.
+```java
+BlumeColor whiteFg = null;
+BlumeColor hotPinkBg = null;
+
+whiteFg = new BlumeColor( 255 );
+hotPinkBg = new BlumeColor( 241, 66, 244 );
+
+Blume.println( "Hello, again!", whiteFg, hotPinkBg, BlumeText.Attribute.Bold );
 ```
 
 #### Example 2
