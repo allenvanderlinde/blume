@@ -76,6 +76,11 @@ Blume.println( "Blume is \"flower\" in German", BlumeText.Cyan, new BlumeColor( 
 Blume.println( "Blume is \"flower\" in German", BlumeText.Yellow, BlumeText.Background.Red );
 ```
 
+You can create a new `BlumeColor` object, however, with the necessary color combination to produce cyan and use that instead.
+```java
+Blume.println( "Blume is \"flower\" in German", new BlumeColor( 0, 255, 255 ), new BlumeColor( 255, 155, 231 ) );
+```
+
 #### Example 2
 Print a yellow, bold word in a string with some text over a purple background.
 
