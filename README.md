@@ -97,13 +97,6 @@ hotPink.setRed( 241 );
 
 Blume.println( "Hello, again!", foreground, hotPink );
 ```
-## <a name="changes"></a>Changes in v1.1.0
-1. Win32 console coloring now supported.
-2. New native exception for operations performed on incompatible operating systems `OSIncompatibilityException`.
-3. There are two methods which can be used to demonstrate some of Blume's capabilities: `displayANSIRGBGradients()` for ANSI-supported terminals, and `displayStandardColorTable()` for both Win32 consoles and ANSI-supported terminals.
-4. Java Native Access libraries with minimum version 4.5.1 are required and can be downloaded below from the JNA GitHub page. They are also included in the Blume JAR file.
-	* [JNA](http://repo1.maven.org/maven2/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar)
-	* [JNA Platform](http://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar)
 
 ## More Information
 You can find the Javadocs for this project [here](https://github.com/allenvanderlinde/blume/tree/master/doc).
