@@ -10,7 +10,8 @@ No testing has been done so far on macOS.
 ## <a name="changes"></a>Changes in v1.1.0
 1. Win32 console coloring now supported.
 2. New native exception for operations performed on incompatible operating systems `OSIncompatibilityException`.
-3. Java Native Access libraries with minimum version 4.5.1 are required and can be downloaded below from the JNA GitHub page.
+3. 3. Added demonstration methods to show color capabilities: `displayStandardColorTable()`, `displayANSIGradients()`, and `display8BitColors()`.
+4. Java Native Access libraries with minimum version 4.5.1 are required and can be downloaded below from the JNA GitHub page.
 	* [JNA](http://repo1.maven.org/maven2/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar)
 	* [JNA Platform](http://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar)
 
