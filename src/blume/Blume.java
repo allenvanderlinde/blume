@@ -49,6 +49,17 @@ public class Blume {
 	 * available for ANSI-supported terminals.
 	 */
 	public static void display8BitColors() {
+		// If Win32 console, exit method
+		if ( BlumeText.getIsWin32() ) {
+			try {
+				throw new OSIncompatibilityException();
+			} catch ( OSIncompatibilityException e ) {
+				e.printStackTrace( "This method is not compatibile with Win32 consoles." );
+				
+				return;
+			}
+		}
+		
 		BlumeColor white = new BlumeColor( 255 );
 		BlumeColor bg = new BlumeColor( 0 );
 		
@@ -125,7 +136,7 @@ public class Blume {
 	 * operating system's standard color palette.
 	 */
 	public static void displayStandardColorTable() {
-		if ( BlumeText.getIsANSI() ) {
+		if ( BlumeText.getIsANSI() ) { // ANSI
 			int fgStart = Integer.parseInt( BlumeText.Black );
 			int fgEnd = Integer.parseInt( BlumeText.White );
 			int bgStart = Integer.parseInt( BlumeText.Background.Black );
@@ -140,7 +151,7 @@ public class Blume {
 					}
 				}
 			}
-		} else if ( BlumeText.getIsWin32() ) {
+		} else if ( BlumeText.getIsWin32() ) { // Win32
 			try {
 				Win32.initializeConsole();
 			} catch ( Exception e ) {
@@ -186,7 +197,7 @@ public class Blume {
 		if ( BlumeText.getIsANSI() ) {
 			StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
 			
-			// Build the ANSI color sequence from the method arguments into a deliminated string
+			// Build the ANSI color sequence from the method arguments into a de		// ANSIliminated string
 			for ( String mod : mods ) {
 				string.append( mod )
 					.append( ANSI._DELIM_ );
@@ -194,7 +205,7 @@ public class Blume {
 			
 			// Remove the trailing delimiter character appended from the previous loop logic
 			string.setLength( string.length() - 1 );
-			
+			// ANSI
 			// Close the string and prepare for printing to the terminal
 			string.append( ANSI._TERMINATOR_ )
 				.append( text )
@@ -470,6 +481,15 @@ public class Blume {
 	 * @param hexes
 	 */
 	public static <T> void printFromHex( T text, short... hexes ) {
+		if ( BlumeText.getIsANSI() ) {
+			try {
+				throw new OSIncompatibilityException();
+			} catch ( OSIncompatibilityException e ) {
+				e.printStackTrace( "This method is not compatible with non-Windows operating systems." );
+				
+				return;
+			}
+		}
 		try {				
 			Win32.initializeConsole();
 		} catch ( Exception e ) {
