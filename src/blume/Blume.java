@@ -70,7 +70,7 @@ public class Blume {
 			
 			bg.setColorValue( i );
 			
-			Blume.print( String.format( " %03d ",  i ), white, bg );
+			print( String.format( " %03d ",  i ), white, bg );
 		}
 		
 		System.out.println();
