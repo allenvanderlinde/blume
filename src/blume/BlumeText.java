@@ -5,7 +5,7 @@
  * foreground and background color options and various display attributes.
  * 
  * @file	BlumeText.java
- * @version	1.0.060818
+ * @version	1.1.0
  * 
  * @author	Allen Vanderlinde
  * @date	5/29/2018
@@ -33,94 +33,124 @@
 
 package blume;
 
+/**
+ * Primary Blume class for Win32 and ANSI color options and attributes.
+ */
 public class BlumeText {
 	/**
-	 * CSI (Control Sequence Introducer) sequence
-	 * which should begin every string intended
-	 * to have colored, or in other ways altered,
-	 * text.
+	 * Operating system currently being used.
 	 */
-	protected static final String _ANSI_ = ((char) 27 + "[");
+	protected static String _OperatingSystem;
 	/**
-	 * Character which denotes a separation between color
-	 * and any other display attributes or options.
+	 * Identifies whether ANSI code should be used. 
 	 */
-	protected static final char _DELIM_ = ';';
+	protected static boolean _isANSI;
 	/**
-	 * ANSI escape sequence to reset the terminal
-	 * text color and text effects.
+	 * Identifies whether Win32 code should be used.
 	 */
-	protected static final String _RESET_ = (_ANSI_ + "0m");
-	/**
-	 * Character which denotes the end of a color or display
-	 * attribute escape sequence.
-	 */
-	protected static final char _TERMINATOR_ = 'm';
-	/**
-	 * ANSI escape sequence to signal use of the system's
-	 * 8-bit color palette (256 colors).
-	 */
-	protected static final String _8_BIT_FOREGROUND_ = "38;5;";
-	/**
-	 * ANSI escape sequence to signal use of the system's
-	 * 8-bit color palette (256 colors) for background color.
-	 */
-	protected static final String _8_BIT_BACKGROUND_ = "48;5;";
-	/**
-	 * ANSI escape sequence to signal use of 24-bit true
-	 * color.
-	 */
-	protected static final String _24_BIT_FOREGROUND_ = "38;2;";
-	/**
-	 * ANSI escape sequence to signal use of 24-bit true
-	 * color for background color.
-	 */
-	protected static final String _24_BIT_BACKGROUND_ = "48;2;";
+	protected static boolean _isWin32;
 	
 	/*
-	 * Standard terminal 8-color palette options
-	 * (foreground).
+	 * Determine the operating system being used in order to ensure
+	 * that the correct ANSI or Win32-based code is executed when using
+	 * Blume.
+	 */
+	static {
+		_OperatingSystem = System.getProperty( "os.name" ).toLowerCase();
+		
+		if ( _OperatingSystem.indexOf( "nux" ) >= 0
+				|| _OperatingSystem.indexOf( "nix" ) >= 0 ) {
+			_isANSI = true;
+		} else if ( _OperatingSystem.indexOf( "win" ) >= 0 ) {
+			_isWin32 = true;
+		}
+	}
+
+	/*
+	 * Basic color palette foreground color options. The value of
+	 * these are determined when the application starts and the
+	 * operating system is determined.
 	 */
 	/**
-	 * Terminal foreground color black.
+	 * Aqua is only applicable to Windows systems (Win32).
 	 */
-	public static final String Black = "30";
+	public static final String Aqua = "03";
+	public static String Black;
+	public static String Blue;
 	/**
-	 * Terminal foreground color red.
-	 */
-	public static final String Red = "31";
-	/**
-	 * Terminal foreground color green.
-	 */
-	public static final String Green = "32";
-	/**
-	 * Terminal foreground color yellow.
-	 */
-	public static final String Yellow = "33";
-	/**
-	 * Terminal foreground color blue.
-	 */
-	public static final String Blue = "34";
-	/**
-	 * Terminal foreground color magenta.
-	 */
-	public static final String Magenta = "35";
-	/**
-	 * Terminal foreground color cyan.
+	 * Cyan is only applicable to Unix-based systems (ANSI).
 	 */
 	public static final String Cyan = "36";
 	/**
-	 * Terminal foreground color white.
-	 */
-	public static final String White = "37";
-	/**
-	 * Terminal default foreground color.
+	 * Default color is only applicable to Unix-based systems (ANSI).
 	 */
 	public static final String Default = "39";
+	/**
+	 * Gray is only applicable to Windows systems (Win32).
+	 */
+	public static final String Gray = "08";
+	public static String Green;
+	/**
+	 * Light aqua is only applicable to Windows systems (Win32).
+	 */
+	public static final String LightAqua = "0B";
+	/**
+	 * Light blue is only applicable to Windows systems (Win32).
+	 */
+	public static final String LightBlue = "09";
+	/**
+	 * Light green is only applicable to Windows systems (Win32).
+	 */
+	public static final String LightGreen = "0A";
+	/**
+	 * Light purple is only applicable to Windows systems (Win32).
+	 */
+	public static final String LightPurple = "0D";
+	/**
+	 * Light red is only applicable to Windows systems (Win32).
+	 */
+	public static final String LightRed = "0C";
+	/**
+	 * Bright white is only applicable to Windows systems (Win32).
+	 */
+	public static final String BrightWhite = "0F";
+	/**
+	 * Light yellow is only applicable to Windows systems (Win32).
+	 */
+	public static final String LightYellow = "0E";
+	/**
+	 * Magenta is only applicable to Unix-based systems (ANSI).
+	 */
+	public static final String Magenta = "35";
+	/**
+	 * Purple is only applicable to Windows systems (Win32).
+	 */
+	public static final String Purple = "05";
+	public static String Red;
+	public static String White;
+	public static String Yellow;
 	
-	/*
+	static {
+		if ( getIsANSI() ) {
+			Black = "30";
+			Red = "31";
+			Green = "32";
+			Yellow = "33";
+			Blue = "34";
+			White = "37";
+		} else if ( getIsWin32() ) {
+			Black = "00";
+			Red = "04";
+			Green = "02";
+			Yellow = "06";
+			Blue = "01";
+		}
+	}
+	
+	/**
 	 * Standard terminal SGR (Select Graphic Rendition) display
-	 * attributes.
+	 * attributes. These attributes only work with Unix-based
+	 * systems.
 	 */
 	public static class Attribute {
 		/**
@@ -138,46 +168,114 @@ public class BlumeText {
 		public static final String Inverse = "7";
 	}
 	
-	/*
-	 * Standard terminal 8-color palette options
-	 * (background).
+	/**
+	 * Basic color palette background color options. The value of
+	 * these are determined when the application starts and the
+	 * operating system is determined.
 	 */
 	public static class Background {
 		/**
-		 * Terminal background color black.
+		 * Aqua is only applicable to Windows systems (Win32).
 		 */
-		public static final String Black = "40";
+		public static final String Aqua = "30";
+		public static String Black;
+		public static String Blue;
 		/**
-		 * Terminal background color red.
-		 */
-		public static final String Red = "41";
-		/**
-		 * Terminal background color green.
-		 */
-		public static final String Green = "42";
-		/**
-		 * Terminal background color yellow.
-		 */
-		public static final String Yellow = "43";
-		/**
-		 * Terminal background color blue.
-		 */
-		public static final String Blue = "44";
-		/**
-		 * Terminal background color magenta.
-		 */
-		public static final String Magenta = "45";
-		/**
-		 * Terminal background color cyan.
+		 * Cyan is only applicable to Unix-based systems (ANSI).
 		 */
 		public static final String Cyan = "46";
 		/**
-		 * Terminal background color white.
-		 */
-		public static final String White = "47";
-		/**
-		 * Default terminal background color.
+		 * Default color is only applicable to Unix-based systems (ANSI).
 		 */
 		public static final String Default = "49";
+		/**
+		 * Gray is only applicable to Windows systems (Win32).
+		 */
+		public static final String Gray = "80";
+		public static String Green;
+		/**
+		 * Light aqua is only applicable to Windows systems (Win32).
+		 */
+		public static final String LightAqua = "B0";
+		/**
+		 * Light blue is only applicable to Windows systems (Win32).
+		 */
+		public static final String LightBlue = "90";
+		/**
+		 * Light green is only applicable to Windows systems (Win32).
+		 */
+		public static final String LightGreen = "A0";
+		/**
+		 * Light purple is only applicable to Windows systems (Win32).
+		 */
+		public static final String LightPurple = "D0";
+		/**
+		 * Light red is only applicable to Windows systems (Win32).
+		 */
+		public static final String LightRed = "C0";
+		/**
+		 * Bright white is only applicable to Windows systems (Win32).
+		 */
+		public static final String BrightWhite = "F0";
+		/**
+		 * Light yellow is only applicable to Windows systems (Win32).
+		 */
+		public static final String LightYellow = "E0";
+		/**
+		 * Magenta is only applicable to Unix-based systems (ANSI).
+		 */
+		public static final String Magenta = "45";
+		/**
+		 * Purple is only applicable to Windows systems (Win32).
+		 */
+		public static final String Purple = "50";
+		public static String Red;
+		public static String White;
+		public static String Yellow;
+		
+		static { 
+			if ( getIsANSI() ) {
+				Black = "40";
+				Blue = "44";
+				Green = "42";
+				Red = "41";
+				White = "47";
+				Yellow = "43";
+			} else if ( getIsWin32() ) {
+				Black = "00";
+				Blue = "10";
+				Green = "20";
+				Red = "40";
+				White = "70";
+				Yellow = "60";
+			}
+		}
+	}
+	
+	/**
+	 * Returns whether ANSI code is being used based upon the operating system.
+	 * 
+	 * @return True if ANSI code is being used.
+	 */
+	public static boolean getIsANSI() {
+		return _isANSI;
+	}
+	
+	/**
+	 * Returns whether Win32 code is being used based upon the operating system.
+	 * 
+	 * @return True if Win32 code is being used.
+	 */
+	public static boolean getIsWin32() {
+		return _isWin32;
+	}
+	
+	/**
+	 * Gets a basic string of what operating system is currently being used.
+	 * 
+	 * @return Operating system string in lower case.
+	 */
+	public static String getOS() {
+		return _OperatingSystem;
 	}
 }

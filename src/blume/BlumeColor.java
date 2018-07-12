@@ -5,7 +5,7 @@
  * foreground and background color options and various text attributes.
  * 
  * @file	BlumeColor.java
- * @version	1.0.060818
+ * @version	1.1.0
  * 
  * @author	Allen Vanderlinde
  * @date	6/7/2018
@@ -33,6 +33,9 @@
 
 package blume;
 
+/**
+ * Color object used by Blume for ANSI-based 8- and 24-bit coloring.
+ */
 public class BlumeColor {
 	/**
 	 * Integer from 0 to 255 that represents an 8-bit
@@ -135,5 +138,37 @@ public class BlumeColor {
 	 */
 	public boolean getIs24Bit() {
 		return this.is24Bit;
+	}
+	/**
+	 * Sets this object's 256-color palette value.
+	 * 
+	 * @param _colorValue
+	 */
+	public void setColorValue( int _colorValue ) {
+		this.colorValue = _colorValue;
+	}
+	/**
+	 * Sets this object's red value.
+	 * 
+	 * @param _red
+	 */
+	public void setRed( int _red ) {
+		this.red = _red;
+	}
+	/**
+	 * Sets this object's green value.
+	 * 
+	 * @param _green
+	 */
+	public void setGreen( int _green ) {
+		this.green = _green;
+	}
+	/**
+	 * Sets this object's blue value.
+	 * 
+	 * @param _blue
+	 */
+	public void setBlue( int _blue ) {
+		this.blue = _blue;
 	}
 }

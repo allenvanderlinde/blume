@@ -5,7 +5,7 @@
  * foreground and background color options and various text attributes.
  * 
  * @file	Blume.java
- * @version	1.0.060818
+ * @version	1.1.0
  * 
  * @author	Allen Vanderlinde
  * @date	5/29/2018
@@ -33,6 +33,9 @@
 
 package blume;
 
+/**
+ * Blume implementation methods.
+ */
 public class Blume {
 	/*
 	 * Note: It is important to note that the order of ANSI escape sequences
@@ -42,18 +45,112 @@ public class Blume {
 	 */
 	
 	/**
+	 * Prints out three vertical blocks of the possible shades of red, green, and blue
+	 * using ANSI.
+	 */
+	public static void displayANSIRGBGradients() {
+		// If Win32 console, exit method
+		if ( BlumeText.getIsWin32() ) {
+			try {
+				throw new OSIncompatibilityException();
+			} catch ( OSIncompatibilityException e ) {
+				e.printStackTrace( "This method is not compatibile with Win32 consoles." );
+				
+				return;
+			}
+		}
+		
+		BlumeColor black = new BlumeColor( 0 );
+		
+		// Red
+		BlumeColor red = new BlumeColor( 255, 0, 0 );
+		for ( int r = 0; r <= 255; r++ ) {
+			if ( r % 16 == 0 ) {
+				System.out.println();
+			} else {
+				red.setRed( r );
+				
+				print( "  ", black, red );
+			}
+		}
+		
+		// Green
+		BlumeColor green = new BlumeColor( 0, 255, 0 );
+		for ( int g = 0; g <= 255; g++ ) {
+			if ( g % 16 == 0 ) {
+				System.out.println();
+			} else { 
+				green.setGreen( g );
+				
+				print( "  ", black, green );
+			}
+		}
+		
+		// Blue
+		BlumeColor blue = new BlumeColor( 0, 0, 255 );
+		for ( int b = 0; b <= 255; b++ ) {
+			if ( b % 16 == 0 ) {
+				System.out.println();
+			} else {
+				blue.setBlue( b );
+				
+				print( "  ", black, blue );
+			}
+		}
+	}
+	
+	/**
+	 * Prints out a semi-graphical display of the available colors from the
+	 * operating system's standard color palette.
+	 */
+	public static void displayStandardColorTable() {
+		if ( BlumeText.getIsANSI() ) {
+			int fgStart = Integer.parseInt( BlumeText.Black );
+			int fgEnd = Integer.parseInt( BlumeText.White );
+			int bgStart = Integer.parseInt( BlumeText.Background.Black );
+			int bgEnd = Integer.parseInt( BlumeText.Background.White );
+			
+			for ( int i = fgStart; i <= fgEnd; i++ ) {
+				for ( int j = bgStart; j <= bgEnd; j++ ) {
+					if ( j % 8 == 0 ) {
+						System.out.println();
+					} else {
+						print( "abc   ", String.valueOf( i ), String.valueOf( j ) );
+					}
+				}
+			}
+		} else if ( BlumeText.getIsWin32() ) {
+			try {
+				Win32.initializeConsole();
+			} catch ( Exception e ) {
+				e.printStackTrace();
+				
+				return;
+			}
+			
+			for ( short hex = 0; hex <= 256; hex += 1 ) {				
+				printFromHex( "abc   ", hex );
+				
+				if ( hex % 15 == 0 ) {
+					System.out.println();
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Prints a string with various modifiers for text color and
 	 * display attributes.
 	 * 
 	 * No new line or LF is produced.
 	 * 
-	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
-	 * and are essentially ANSI escape sequences.
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class. 
+	 * Different modifiers are used between Unix-based and Win32 consoles.	 *
 	 * 
 	 * @param text
 	 * @param mods
 	 */
-	public static void print( String text, String... mods ) {
+	public static <T> void print( T text, String... mods ) {
 		// If there are no modification arguments, print like normal and return
 		if ( mods.length == 0 ) {
 			System.out.print( text );
@@ -61,143 +158,311 @@ public class Blume {
 			return;
 		}
 		
-		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
-		
-		// Build the ANSI sequences from the method arguments into an escaped string
-		for ( String mod : mods ) {
-			string.append( mod )
-				.append( BlumeText._DELIM_ );
+		/*
+		 * Print text with color options and formatting depending upon the
+		 * operating system.
+		 */
+		if ( BlumeText.getIsANSI() ) {
+			StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
+			
+			// Build the ANSI color sequence from the method arguments into a deliminated string
+			for ( String mod : mods ) {
+				string.append( mod )
+					.append( ANSI._DELIM_ );
+			}
+			
+			// Remove the trailing delimiter character appended from the previous loop logic
+			string.setLength( string.length() - 1 );
+			
+			// Close the string and prepare for printing to the terminal
+			string.append( ANSI._TERMINATOR_ )
+				.append( text )
+				.append( ANSI._RESET_ );
+			
+			System.out.print( string );
+		} else if ( BlumeText.getIsWin32() ) {			
+			try {				
+				Win32.initializeConsole();
+			} catch ( Exception e ) {
+				e.printStackTrace();
+				
+				return;
+			}
+			
+			Win32.setColor( mods );
+			
+			System.out.print( text );
+			
+			Win32.resetConsole();
+		} else {
+			System.out.print( text );
+		}
+	}
+	
+	/**
+	 * Prints a string with a foreground color described by a
+	 * BlumeColor object for 8- and 24-bit coloring.
+	 * 
+	 * No new line or LF is produced.
+	 * 
+	 * Note: This method is only compatible with consoles which support
+	 * ANSI escape sequence coloring.
+	 * 
+	 * @param text
+	 * @param fg
+	 */
+	public static <T> void print( T text, BlumeColor fg ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
+			}
 		}
 		
-		// Remove the trailing delimiter character appended from the previous loop logic
-		string.setLength( string.length() - 1 );
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
 		
-		// Close the string and prepare for printing to the terminal
-		string.append( BlumeText._TERMINATOR_ )
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
+		}
+		
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
 			.append( text )
-			.append( BlumeText._RESET_ );
-		
+			.append( ANSI._RESET_ );
+	
 		System.out.print( string );
 	}
 	
 	/**
-	 * Prints a string with an 8-bit or 24-bit color option represented
-	 * by a {@link blume.BlumeColor} object. Background color palette options
-	 * and other display attributes are also compatible mods.
+	 * Prints a string with foreground and background colors described by
+	 * BlumeColor objects for 8- and 24-bit coloring.
 	 * 
 	 * No new line or LF is produced.
 	 * 
-	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
-	 * and are essentially ANSI escape sequences.
+	 * Note: This method is only compatible with consoles whichs upport
+	 * ANSI escape sequence coloring.
 	 * 
 	 * @param text
-	 * @param color
-	 * @param mods
+	 * @param fg
+	 * @param bg
 	 */
-	public static void print( String text, BlumeColor color, String... mods ) {
-		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
-		
-		// If mods have been included, append them to the ANSI escape sequence
-		if ( mods.length > 0 ) {
-			for ( String mod : mods ) {
-				string.append( mod )
-					.append( BlumeText._DELIM_ );
+	public static <T> void print( T text, BlumeColor fg, BlumeColor bg ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
 			}
 		}
 		
-		/*
-		 * Close the string with the appropriate color option and value
-		 * and prepare for printing to the terminal.
-		 */
-		if ( color.getIs8Bit() ) { // 8-bit color
-			string.append( BlumeText._8_BIT_FOREGROUND_ )
-				.append( color.getColorValue() );
-		} else if ( color.getIs24Bit() ) { // 24-bit color
-			string.append( BlumeText._24_BIT_FOREGROUND_ )
-				.append( color.getRed() )
-				.append( BlumeText._DELIM_ )
-				.append( color.getGreen() )
-				.append( BlumeText._DELIM_ )
-				.append( color.getBlue() );
-		}
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
 		
-		string.append( BlumeText._TERMINATOR_ )
-			.append( text )
-			.append( BlumeText._RESET_ );
-		
-		System.out.print( string );
-	}
-	
-	/**
-	 * Prints a string with 8-bit or 24-bit foreground and background
-	 * color options represented by {@link blume.BlumeColor} objects.
-	 * Display attributes (e.g., bold, inverse) can still be used
-	 * and are compatible mods.
-	 * 
-	 * No new line or LF is produced.
-	 * 
-	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
-	 * and are essentially ANSI escape sequences.
-	 * 
-	 * @param text
-	 * @param foregroundColor
-	 * @param backgroundColor
-	 * @param mods
-	 */
-	public static void print( String text, BlumeColor foregroundColor, BlumeColor backgroundColor, String... mods ) {
-		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
-		
-		// If mods have been included, append them to the ANSI escape sequence
-		if ( mods.length > 0 ) {
-			for ( String mod : mods ) {
-				string.append( mod )
-					.append( BlumeText._DELIM_ );
-			}
-		}
-		
-		/*
-		 * For the foreground color, close the string with the
-		 * appropriate color option and value and prepare
-		 * for printing to the terminal.
-		 */
-		if ( foregroundColor.getIs8Bit() ) { // 8-bit color
-			string.append( BlumeText._8_BIT_FOREGROUND_ )
-				.append( foregroundColor.getColorValue() );
-		} else if ( foregroundColor.getIs24Bit() ) { // 24-bit color
-			string.append( BlumeText._24_BIT_FOREGROUND_ )
-				.append( foregroundColor.getRed() )
-				.append( BlumeText._DELIM_ )
-				.append( foregroundColor.getGreen() )
-				.append( BlumeText._DELIM_ )
-				.append( foregroundColor.getBlue() );
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
 		}
 		
 		// Append another delimiter before appending the background color
-		string.append( BlumeText._DELIM_ );
+		string.append( ANSI._DELIM_ );
 		
-		/*
-		 * For the background color, close the string with the
-		 * appropriate color option and value and prepare
-		 * for printing to the terminal.
-		 */
-		if ( backgroundColor.getIs8Bit() ) {
-			string.append( BlumeText._8_BIT_BACKGROUND_ )
-				.append( backgroundColor.getColorValue() );
-		} else if ( backgroundColor.getIs24Bit() ) {
-			string.append( BlumeText._24_BIT_BACKGROUND_ )
-				.append( backgroundColor.getRed() )
-				.append( BlumeText._DELIM_ )
-				.append( backgroundColor.getGreen() )
-				.append( BlumeText._DELIM_ )
-				.append( backgroundColor.getBlue() );
+		// Set 8- or 24-bit background color
+		if ( bg.getIs8Bit() ) {
+			string.append( ANSI._8_BIT_BACKGROUND_ )
+				.append( bg.getColorValue() );
+		} else if ( bg.getIs24Bit() ) {
+			string.append( ANSI._24_BIT_BACKGROUND_ )
+				.append( bg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getBlue() );
 		}
 		
-		string.append( BlumeText._TERMINATOR_ )
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
 			.append( text )
-			.append( BlumeText._RESET_ );
+			.append( ANSI._RESET_ );
 		
 		System.out.print( string );
 	}
+	
+	/**
+	 * Prints a string with a foreground color described by a
+	 * BlumeColor object for 8- and 24-bit coloring. Certain ANSI
+	 * display attributes can also be used (e.g., bold, italic).
+	 * 
+	 * No new line or LF is produced.
+	 * 
+	 * @param text
+	 * @param fg
+	 * @param attrs
+	 */
+	public static <T> void print( T text, BlumeColor fg, String... attrs ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
+			}
+		}
+		
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
+		
+		// Append ANSI display options to the string
+		if ( attrs.length > 0 ) {
+			for ( String attr : attrs ) {
+				string.append( attr )
+					.append( ANSI._DELIM_ );
+			}
+		}
+		
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
+		}
+		
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
+			.append( text )
+			.append( ANSI._RESET_ );
+	
+		System.out.print( string );
+	}
+	
+	/**
+	 * Prints a string with a foreground and background color
+	 * described by BlumeColor objects for 8- and 24-bit coloring.
+	 * Certain ANSI display attributes can also be used
+	 * (e.g., bold, italic).
+	 * 
+	 * No new line or LF is produced.
+	 * 
+	 * @param text
+	 * @param fg
+	 * @param bg
+	 * @param attrs
+	 */
+	public static <T> void print( T text, BlumeColor fg, BlumeColor bg, String... attrs ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
+			}
+		}
+		
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
+		
+		// Append ANSI display options to the string
+		if ( attrs.length > 0 ) {
+			for ( String attr : attrs ) {
+				string.append( attr )
+					.append( ANSI._DELIM_ );
+			}
+		}
+		
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
+		}
+		
+		// Append another delimiter before appending the background color
+		string.append( ANSI._DELIM_ );
+		
+		// Set 8- or 24-bit background color
+		if ( bg.getIs8Bit() ) {
+			string.append( ANSI._8_BIT_BACKGROUND_ )
+				.append( bg.getColorValue() );
+		} else if ( bg.getIs24Bit() ) {
+			string.append( ANSI._24_BIT_BACKGROUND_ )
+				.append( bg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getBlue() );
+		}
+		
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
+			.append( text )
+			.append( ANSI._RESET_ );
+	
+		System.out.print( string );
+	}
+	
+	/**
+	 * Prints a string with various hexadecimal modifiers for text
+	 * color for Win32-based consoles.
+	 * 
+	 * No new line or LF is produced.
+	 * 
+	 * Note: This is used primarily as an internal method for color table
+	 * display and is not a cross-platform method.
+	 * 
+	 * @param text
+	 * @param hexes
+	 */
+	public static <T> void printFromHex( T text, short... hexes ) {
+		try {				
+			Win32.initializeConsole();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			
+			return;
+		}
+		
+		Win32.setColor( hexes );
+		
+		System.out.print( text );
+		
+		Win32.resetConsole();
+	}	
 	
 	/**
 	 * Prints a string with various modifiers for text color and
@@ -205,13 +470,13 @@ public class Blume {
 	 * 
 	 * This method produces a new line or LF.
 	 * 
-	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
-	 * and are essentially ANSI escape sequences.
+	 * Compatible modifiers can be found in the {@link blume.BlumeText} class. 
+	 * Different modifiers are used between Unix-based and Win32 consoles.	 *
 	 * 
 	 * @param text
 	 * @param mods
 	 */
-	public static void println( String text, String... mods ) {
+	public static <T> void println( T text, String... mods ) {
 		// If there are no modification arguments, print like normal and return
 		if ( mods.length == 0 ) {
 			System.out.println( text );
@@ -219,141 +484,281 @@ public class Blume {
 			return;
 		}
 		
-		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
-		
-		// Build the ANSI sequences from the method arguments into an escaped string
-		for ( String mod : mods ) {
-			string.append( mod )
-				.append( BlumeText._DELIM_ );
+		/*
+		 * Print text with color options and formatting depending upon the
+		 * operating system.
+		 */
+		if ( BlumeText.getIsANSI() ) {
+			StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
+			
+			// Build the ANSI color sequence from the method arguments into a deliminated string
+			for ( String mod : mods ) {
+				string.append( mod )
+					.append( ANSI._DELIM_ );
+			}
+			
+			// Remove the trailing delimiter character appended from the previous loop logic
+			string.setLength( string.length() - 1 );
+			
+			// Close the string and prepare for printing to the terminal
+			string.append( ANSI._TERMINATOR_ )
+				.append( text )
+				.append( ANSI._RESET_ );
+			
+			System.out.println( string );
+		} else if ( BlumeText.getIsWin32() ) {			
+			try {				
+				Win32.initializeConsole();
+			} catch ( Exception e ) {
+				e.printStackTrace();
+				
+				return;
+			}
+			
+			Win32.setColor( mods );
+			
+			System.out.println( text );
+			
+			Win32.resetConsole();
+		} else {
+			System.out.println( text );
+		}
+	}
+	
+	/**
+	 * Prints a string with a foreground color described by a
+	 * BlumeColor object for 8- and 24-bit coloring.
+	 * 
+	 * This method produces a new line or LF.
+	 * 
+	 * Note: This method is only compatible with consoles which support
+	 * ANSI escape sequence coloring.
+	 * 
+	 * @param text
+	 * @param fg
+	 */
+	public static <T> void println( T text, BlumeColor fg ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
+			}
 		}
 		
-		// Remove the trailing delimiter character appended from the previous loop logic
-		string.setLength( string.length() - 1 );
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
 		
-		// Close the string and prepare for printing to the terminal
-		string.append( BlumeText._TERMINATOR_ )
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
+		}
+		
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
 			.append( text )
-			.append( BlumeText._RESET_ );
-		
+			.append( ANSI._RESET_ );
+	
 		System.out.println( string );
 	}
 	
 	/**
-	 * Prints a string with an 8-bit or 24-bit color option represented
-	 * by a {@link blume.BlumeColor} object. Background color palette options
-	 * and other display attributes are also compatible mods.
+	 * Prints a string with foreground and background colors described by
+	 * BlumeColor objects for 8- and 24-bit coloring.
 	 * 
 	 * This method produces a new line or LF.
 	 * 
-	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
-	 * and are essentially ANSI escape sequences.
+	 * Note: This method is only compatible with consoles whichs upport
+	 * ANSI escape sequence coloring.
 	 * 
 	 * @param text
-	 * @param color
-	 * @param mods
+	 * @param fg
+	 * @param bg
 	 */
-	public static void println( String text, BlumeColor color, String... mods ) {
-		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
-		
-		// If mods have been included, append them to the ANSI escape sequence
-		if ( mods.length > 0 ) {
-			for ( String mod : mods ) {
-				string.append( mod )
-					.append( BlumeText._DELIM_ );
+	public static <T> void println( T text, BlumeColor fg, BlumeColor bg ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
 			}
 		}
 		
-		/*
-		 * Close the string with the appropriate color option and value
-		 * and prepare for printing to the terminal.
-		 */
-		if ( color.getIs8Bit() ) { // 8-bit color
-			string.append( BlumeText._8_BIT_FOREGROUND_ )
-				.append( color.getColorValue() );
-		} else if ( color.getIs24Bit() ) { // 24-bit color
-			string.append( BlumeText._24_BIT_FOREGROUND_ )
-				.append( color.getRed() )
-				.append( BlumeText._DELIM_ )
-				.append( color.getGreen() )
-				.append( BlumeText._DELIM_ )
-				.append( color.getBlue() );
-		}
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
 		
-		string.append( BlumeText._TERMINATOR_ )
-			.append( text )
-			.append( BlumeText._RESET_ );
-		
-		System.out.println( string );
-	}
-	
-	/**
-	 * Prints a string with 8-bit or 24-bit foreground and background
-	 * color options represented by {@link blume.BlumeColor} objects.
-	 * Display attributes (e.g., bold, inverse) can still be used
-	 * and are compatible mods.
-	 * 
-	 * This method produces a new line or LF.
-	 * 
-	 * Compatible modifiers can be found in the {@link blume.BlumeText} class
-	 * and are essentially ANSI escape sequences.
-	 * 
-	 * @param text
-	 * @param foregroundColor
-	 * @param backgroundColor
-	 * @param mods
-	 */
-	public static void println( String text, BlumeColor foregroundColor, BlumeColor backgroundColor, String... mods ) {
-		StringBuilder string = new StringBuilder( BlumeText._ANSI_ );
-		
-		// If mods have been included, append them to the ANSI escape sequence
-		if ( mods.length > 0 ) {
-			for ( String mod : mods ) {
-				string.append( mod )
-					.append( BlumeText._DELIM_ );
-			}
-		}
-		
-		/*
-		 * For the foreground color, close the string with the
-		 * appropriate color option and value and prepare
-		 * for printing to the terminal.
-		 */
-		if ( foregroundColor.getIs8Bit() ) { // 8-bit color
-			string.append( BlumeText._8_BIT_FOREGROUND_ )
-				.append( foregroundColor.getColorValue() );
-		} else if ( foregroundColor.getIs24Bit() ) { // 24-bit color
-			string.append( BlumeText._24_BIT_FOREGROUND_ )
-				.append( foregroundColor.getRed() )
-				.append( BlumeText._DELIM_ )
-				.append( foregroundColor.getGreen() )
-				.append( BlumeText._DELIM_ )
-				.append( foregroundColor.getBlue() );
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
 		}
 		
 		// Append another delimiter before appending the background color
-		string.append( BlumeText._DELIM_ );
+		string.append( ANSI._DELIM_ );
 		
-		/*
-		 * For the background color, close the string with the
-		 * appropriate color option and value and prepare
-		 * for printing to the terminal.
-		 */
-		if ( backgroundColor.getIs8Bit() ) {
-			string.append( BlumeText._8_BIT_BACKGROUND_ )
-				.append( backgroundColor.getColorValue() );
-		} else if ( backgroundColor.getIs24Bit() ) {
-			string.append( BlumeText._24_BIT_BACKGROUND_ )
-				.append( backgroundColor.getRed() )
-				.append( BlumeText._DELIM_ )
-				.append( backgroundColor.getGreen() )
-				.append( BlumeText._DELIM_ )
-				.append( backgroundColor.getBlue() );
+		// Set 8- or 24-bit background color
+		if ( bg.getIs8Bit() ) {
+			string.append( ANSI._8_BIT_BACKGROUND_ )
+				.append( bg.getColorValue() );
+		} else if ( bg.getIs24Bit() ) {
+			string.append( ANSI._24_BIT_BACKGROUND_ )
+				.append( bg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getBlue() );
 		}
 		
-		string.append( BlumeText._TERMINATOR_ )
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
 			.append( text )
-			.append( BlumeText._RESET_ );
+			.append( ANSI._RESET_ );
 		
+		System.out.println( string );
+	}
+	
+	/**
+	 * Prints a string with a foreground color described by a
+	 * BlumeColor object for 8- and 24-bit coloring. Certain ANSI
+	 * display attributes can also be used (e.g., bold, italic).
+	 * 
+	 * This method produces a new line or LF.
+	 * 
+	 * @param text
+	 * @param fg
+	 * @param attrs
+	 */
+	public static <T> void println( T text, BlumeColor fg, String... attrs ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
+			}
+		}
+		
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
+		
+		// Append ANSI display options to the string
+		if ( attrs.length > 0 ) {
+			for ( String attr : attrs ) {
+				string.append( attr )
+					.append( ANSI._DELIM_ );
+			}
+		}
+		
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
+		}
+		
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
+			.append( text )
+			.append( ANSI._RESET_ );
+	
+		System.out.println( string );
+	}
+	
+	/**
+	 * Prints a string with a foreground and background color
+	 * described by BlumeColor objects for 8- and 24-bit coloring.
+	 * Certain ANSI display attributes can also be used
+	 * (e.g., bold, italic).
+	 * 
+	 * This method produces a new line or LF.
+	 * 
+	 * @param text
+	 * @param fg
+	 * @param bg
+	 * @param attrs
+	 */
+	public static <T> void println( T text, BlumeColor fg, BlumeColor bg, String... attrs ) {
+		// Test if method is being executed from a Windows system
+		if ( BlumeText.getIsWin32() ) {
+			try {				
+				throw new OSIncompatibilityException();
+			} catch (OSIncompatibilityException e) {				
+				e.printStackTrace( "BlumeColor is not compatible with Win32 consoles." );
+				
+				return;
+			}
+		}
+		
+		StringBuilder string = new StringBuilder( ANSI._PREFIX_ );
+		
+		// Append ANSI display options to the string
+		if ( attrs.length > 0 ) {
+			for ( String attr : attrs ) {
+				string.append( attr )
+					.append( ANSI._DELIM_ );
+			}
+		}
+		
+		// Set 8- or 24-bit foreground color
+		if ( fg.getIs8Bit() ) { // 8-bit color
+			string.append( ANSI._8_BIT_FOREGROUND_ )
+				.append( fg.getColorValue() );
+		} else if ( fg.getIs24Bit() ) { // 24-bit color
+			string.append( ANSI._24_BIT_FOREGROUND_ )
+				.append( fg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( fg.getBlue() );
+		}
+		
+		// Append another delimiter before appending the background color
+		string.append( ANSI._DELIM_ );
+		
+		// Set 8- or 24-bit background color
+		if ( bg.getIs8Bit() ) {
+			string.append( ANSI._8_BIT_BACKGROUND_ )
+				.append( bg.getColorValue() );
+		} else if ( bg.getIs24Bit() ) {
+			string.append( ANSI._24_BIT_BACKGROUND_ )
+				.append( bg.getRed() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getGreen() )
+				.append( ANSI._DELIM_ )
+				.append( bg.getBlue() );
+		}
+		
+		// Terminate the escape sequence and print
+		string.append( ANSI._TERMINATOR_ )
+			.append( text )
+			.append( ANSI._RESET_ );
+	
 		System.out.println( string );
 	}
 }
