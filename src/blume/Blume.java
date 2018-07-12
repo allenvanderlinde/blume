@@ -92,7 +92,7 @@ public class Blume {
 			}
 		}
 		
-		BlumeColor black = new BlumeColor( 0 );
+		BlumeColor nothing = new BlumeColor( 0 );
 		
 		// Red
 		BlumeColor red = new BlumeColor( 255, 0, 0 );
@@ -102,7 +102,7 @@ public class Blume {
 			} else {
 				red.setRed( r );
 				
-				print( "  ", black, red );
+				print( "  ", nothing, red );
 			}
 		}
 		
@@ -114,7 +114,7 @@ public class Blume {
 			} else { 
 				green.setGreen( g );
 				
-				print( "  ", black, green );
+				print( "  ", nothing, green );
 			}
 		}
 		
@@ -126,7 +126,7 @@ public class Blume {
 			} else {
 				blue.setBlue( b );
 				
-				print( "  ", black, blue );
+				print( "  ", nothing, blue );
 			}
 		}
 	}
