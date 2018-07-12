@@ -45,10 +45,31 @@ public class Blume {
 	 */
 	
 	/**
+	 * Displays a 16x16 table of the 8-bit color palette values
+	 * available for ANSI-supported terminals.
+	 */
+	public static void display8BitColors() {
+		BlumeColor white = new BlumeColor( 255 );
+		BlumeColor bg = new BlumeColor( 0 );
+		
+		for ( int i = 0; i < 256; i++ ) {
+			if ( i % 16 == 0 ) {
+				System.out.println();
+			}
+			
+			bg.setColorValue( i );
+			
+			Blume.print( String.format( " %03d ",  i ), white, bg );
+		}
+		
+		System.out.println();
+	}
+	
+	/**
 	 * Prints out three vertical blocks of the possible shades of red, green, and blue
 	 * using ANSI.
 	 */
-	public static void displayANSIRGBGradients() {
+	public static void displayANSIGradients() {
 		// If Win32 console, exit method
 		if ( BlumeText.getIsWin32() ) {
 			try {

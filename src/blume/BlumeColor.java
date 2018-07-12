@@ -171,4 +171,18 @@ public class BlumeColor {
 	public void setBlue( int _blue ) {
 		this.blue = _blue;
 	}
+	/**
+	 * Sets this object's color type as 8-bit.
+	 */
+	public void setIs8Bit() {
+		this.is8Bit = true;
+		this.is24Bit = false;
+	}
+	/**
+	 * Sets this object's color type as 24-bit.
+	 */
+	public void setIs24Bit() {
+		this.is24Bit = true;
+		this.is8Bit = false;
+	}
 }
