@@ -3,7 +3,7 @@ Blume (pronounced "bloom" in English; German for <i>flower</i>) is an experiment
 
 With the release of version 1.1.0, Blume now supports Win32 consoles! Unfortunately, due to the native color limitations of the Win32 console, there is no 8- or 24-bit true color capability whereby Blume can only utilize the Win32 basic color palette. (<i>But hey, that's not bad!</i>)
 
-Java Native Access was leveraged to gain access to the Windows Kernel32 library and is an incredible API. Visit JNA [here](https://github.com/java-native-access/jna). The JNA libraries will need to be used and added to the same build path as Blume (see [here](#changes)).
+Java Native Access was leveraged to gain access to the Windows Kernel32 library and is an incredible API. Visit JNA [here](https://github.com/java-native-access/jna). The JNA libraries are used and included in Blume release JARs (see [here](#changes)).
 
 No testing has been done so far on macOS.
 
@@ -11,7 +11,7 @@ No testing has been done so far on macOS.
 1. Win32 console coloring now supported.
 2. New native exception for operations performed on incompatible operating systems `OSIncompatibilityException`.
 3. Added demonstration methods to show color capabilities: `displayStandardColorTable()`, `displayANSIGradients()`, and `display8BitColors()`.
-4. Java Native Access libraries with minimum version 4.5.1 are required and can be downloaded below from the JNA GitHub page.
+4. Java Native Access libraries with minimum version 4.5.1 are required and can be downloaded below from the JNA GitHub page for further exploration. They are already included in the Blume release JAR for v1.1.0 and shouldn't need to be manually included in your project's build path.
 	* [JNA](http://repo1.maven.org/maven2/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar)
 	* [JNA Platform](http://repo1.maven.org/maven2/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar)
 
